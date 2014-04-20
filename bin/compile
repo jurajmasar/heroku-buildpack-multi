@@ -45,10 +45,15 @@ for BUILDPACK in $(cat $1/.buildpacks); do
 
     if [ $? == 0 ]; then
       echo "=====> Detected Framework: $framework"
-      $dir/bin/compile $1 $2 $3
+      $dir/bin/compile $1 $2
 
       if [ $? != 0 ]; then
         exit 1
+      fi
+
+      # check if the buildpack left behind an environment for subsequent ones
+      if [ -e $dir/export ]; then
+        source $dir/export
       fi
 
       if [ -x $dir/bin/release ]; then
